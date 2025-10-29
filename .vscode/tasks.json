@@ -1,0 +1,45 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Backend (Spring Boot)",
+      "type": "shell",
+      "command": "cd backend/azs-shipping && ./mvnw spring-boot:run",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "servers"
+      }
+    },
+    {
+      "label": "Frontend (React)",
+      "type": "shell",
+      "command": "cd frontend && npm run dev",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "servers"
+      }
+    },
+    {
+      // Esta é uma tarefa "mãe" que roda as duas acima
+      "label": "Start All (Backend + Frontend)",
+      "dependsOn": [
+        "Backend (Spring Boot)",
+        "Frontend (React)"
+      ],
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true // Torna esta a tarefa padrão de "Build"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

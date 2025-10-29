@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # Serviço do Banco de Dados
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root_password' # Mude se desejar
+      MYSQL_DATABASE: 'dev_db' # Mude para o nome do seu banco
+    ports:
+      # Expõe a porta 3306 do contêiner para a porta 3306 do seu host
+      - "3306:3306" 
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  # Serviço de Desenvolvimento (Backend + Frontend)
+  backend:
+    # Diz ao Compose para construir a imagem usando o Dockerfile nesta pasta
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring-react-dev
+    restart: unless-stopped
+    
+    # Este serviço depende que o 'db' esteja pronto
+    depends_on:
+      - db
+
+    # Mapeia as portas do Spring e do React
+    ports:
+      - "8080:8080" # Spring
+      - "3000:3000" # React
+
+    # Monta a pasta raiz inteira do seu projeto (..)
+    # dentro do contêiner em /workspace
+    volumes:
+      - ../:/workspace:cached
+
+    # Variáveis de ambiente para o Spring se conectar ao 'db'
+    # 'db' é o nome do serviço do MySQL, o Docker Compose
+    # resolve este nome para o IP interno do contêiner.
+    environment:
+      DATABASE_HOST: 'db'
+      DATABASE_PORT: '3306'
+      DATABASE_NAME: 'dev_db'
+      DATABASE_USER: 'root'
+      DATABASE_PASSWORD: 'root_password'
+
+    # Comando para manter o contêiner rodando
+    # O VSCode se anexa e então roda o 'postCreateCommand'
+    command: sleep infinity
+
+# Volume nomeado para persistir os dados do MySQL
+volumes:
+  mysql-data:

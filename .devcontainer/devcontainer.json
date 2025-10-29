@@ -1,0 +1,45 @@
+{
+  "name": "Spring Boot, React, MySQL Stack",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "backend",
+  "workspaceFolder": "/workspace",
+
+  // --- Configuração de Portas ---
+  "forwardPorts": [
+    8080, // Spring Boot
+    3000, // React
+    3306  // MySQL
+  ],
+
+  // Adiciona nomes amigáveis para as portas na UI do VSCode.
+  "portsAttributes": {
+    "8080": {
+      "label": "Backend (Spring Boot)"
+    },
+    "3000": {
+      "label": "Frontend (React)"
+    },
+    // Corrigido de 3307 para 3306 para bater com a forwardPorts
+    "3306": { 
+      "label": "Database (MySQL)"
+    }
+  },
+
+  // --- Personalização do VSCode ---
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "vmware.vscode-boot-dev-pack",
+        "cweijan.vscode-mysql-client2",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  },
+
+  // --- Comandos Pós-Criação ---
+  // Este comando funciona pois o VSCode se anexa ao serviço "backend",
+  // que terá acesso à pasta /workspace inteira.
+  "postCreateCommand": "cd backend/azs-shipping && ./mvnw install && cd ../../frontend && npm install"
+}
